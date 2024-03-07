@@ -3,7 +3,7 @@ import { Header } from './components/header'
 import { Tabs } from './components/tabs'
 import { Button } from './components/ui/button'
 import { Control, Input } from './components/ui/input'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, keepPreviousData } from '@tanstack/react-query'
 import {
   Table,
   TableBody,
@@ -13,6 +13,9 @@ import {
   TableRow,
 } from './components/ui/table'
 import { Pagination } from './components/pagination'
+import { useSearchParams } from 'react-router-dom'
+import { useState } from 'react'
+import { useDebounce } from 'use-debounce'
 
 export interface Tags {
   title: string
@@ -32,16 +35,27 @@ export interface TagResponse {
 }
 
 export function App() {
+  const [searchParams] = useSearchParams()
+  const [filter, setFilter] = useState('')
+  const [debouncedValue] = useDebounce(filter, 1000)
+
+  const page = searchParams.get('page') ? Number(searchParams.get('page')) : 1
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFilter(event.target.value)
+  }
+
   const { data: tagsResponse, isLoading } = useQuery<TagResponse>({
-    queryKey: ['get-tags'],
+    queryKey: ['get-tags', debouncedValue, page],
     queryFn: async () => {
       const response = await fetch(
-        'http://localhost:3333/tags?_page=1&_per_page=10',
+        `http://localhost:3333/tags?_page=${page}&_per_page=10&title=${debouncedValue}`,
       )
       const data = await response.json()
 
       return data
     },
+    placeholderData: keepPreviousData,
   })
 
   if (isLoading) {
@@ -64,7 +78,11 @@ export function App() {
         <div className="flex items-center justify-between">
           <Input variant="filter">
             <Search className="size-3" />
-            <Control placeholder="Search tags..." />
+            <Control
+              placeholder="Search tags..."
+              onChange={handleInputChange}
+              value={filter}
+            />
           </Input>
           <Button>
             <FileDown className="size-3" />
@@ -105,7 +123,7 @@ export function App() {
         </Table>
         {tagsResponse && (
           <Pagination
-            page={1}
+            page={page}
             pages={tagsResponse.pages}
             items={tagsResponse.items}
           />
