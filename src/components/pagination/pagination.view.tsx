@@ -1,63 +1,9 @@
-import {
-  ChevronLeft,
-  ChevronRight,
-  ChevronsLeft,
-  ChevronsRight,
-} from 'lucide-react'
+import { Select, SelectTrigger, SelectContent, SelectItem } from "../ui/select"
+import { ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight } from "lucide-react"
+import { Button } from "../ui/button"
+import usePaginationModel from "./pagination.model"
 
-import { useSearchParams } from 'react-router-dom'
-import { Button } from './ui/button'
-import { Select, SelectContent, SelectItem, SelectTrigger } from './ui/select'
-
-interface PaginationProps {
-  pages: number
-  items: number
-  page: number
-}
-
-export function Pagination({ items, page, pages }: PaginationProps) {
-  const [, setSearchParams] = useSearchParams()
-
-  function firstPage() {
-    setSearchParams((params) => {
-      params.set('page', '1')
-
-      return params
-    })
-  }
-
-  function previousPage() {
-    if (page - 1 <= 0) {
-      return
-    }
-
-    setSearchParams((params) => {
-      params.set('page', String(page - 1))
-
-      return params
-    })
-  }
-
-  function nextPage() {
-    if (page + 1 > pages) {
-      return
-    }
-
-    setSearchParams((params) => {
-      params.set('page', String(page + 1))
-
-      return params
-    })
-  }
-
-  function lastPage() {
-    setSearchParams((params) => {
-      params.set('page', String(pages))
-
-      return params
-    })
-  }
-
+const PaginationView = ({ items, page, pages, firstPage, previousPage, nextPage, lastPage }: ReturnType<typeof usePaginationModel>) => {
   return (
     <div className="flex text-sm items-center justify-between text-zinc-500">
       <span>Showing 10 of {items} items</span>
@@ -101,3 +47,5 @@ export function Pagination({ items, page, pages }: PaginationProps) {
     </div>
   )
 }
+
+export default PaginationView
