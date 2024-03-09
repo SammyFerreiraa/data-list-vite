@@ -2,9 +2,11 @@ import { ChevronDown } from 'lucide-react'
 
 import nivoLogo from '../assets/logo-nivo.svg'
 import { Badge } from './ui/badge'
+import { Tabs } from './tabs'
 
 export function Header() {
   return (
+   <>
     <div className="max-w-[1200px] mx-auto flex items-center justify-between">
       <div className="flex items-center gap-3">
         <div className="flex items-center gap-2.5">
@@ -79,5 +81,7 @@ export function Header() {
         <ChevronDown className="size-4 text-zinc-600" />
       </div>
     </div>
+    <Tabs />
+    </>
   )
 }
