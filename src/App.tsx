@@ -14,23 +14,7 @@ import {
 import { Pagination } from './components/pagination'
 import { useSearchParams } from 'react-router-dom'
 import { FormEvent, useState } from 'react'
-
-export interface Tags {
-  title: string
-  slug: string
-  amountOfVideos: number
-  id: string
-}
-
-export interface TagResponse {
-  first: number
-  prev: number | null
-  next: number
-  last: number
-  pages: number
-  items: number
-  data: Tags[]
-}
+import { TagResponse } from './@types'
 
 export function App() {
   const [searchParams, setSearchParams] = useSearchParams()
